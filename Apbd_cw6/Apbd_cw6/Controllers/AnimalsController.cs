@@ -16,7 +16,7 @@ public class AnimalsController : ControllerBase
     }
     
     [HttpGet]
-    public IActionResult GetAnimals()
+    public IActionResult GetAnimals(string argument = "Name")
     {
         //open connection
         using SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("Default"));
@@ -25,7 +25,11 @@ public class AnimalsController : ControllerBase
         //Define command
         using SqlCommand command = new SqlCommand();
         command.Connection = connection;
-        command.CommandText = "SELECT * FROM Animal";
+
+        if (Validator.CheckArgument(argument))
+            command.CommandText = "SELECT * FROM Animal ORDER BY " + argument + " ASC"; //secured concatenation
+        else
+            return BadRequest("Invalid argument");
         
         //Execute command
         var reader = command.ExecuteReader();
@@ -34,13 +38,19 @@ public class AnimalsController : ControllerBase
 
         int idAnimalOrdinal = reader.GetOrdinal("IdAnimal"); //numer columny dla IdAnimal
         int nameOrdinal = reader.GetOrdinal("Name");
+        int descriptionOrdinal = reader.GetOrdinal("Description");
+        int categoryOrdinal = reader.GetOrdinal("Category");
+        int areaOrdinal = reader.GetOrdinal("Area");
         
         while (reader.Read())
         {
             animals.Add(new Animal()
             {
                 IdAnimal = reader.GetInt32(idAnimalOrdinal),
-                Name = reader.GetString(nameOrdinal)
+                Name = reader.GetString(nameOrdinal),
+                Description = reader.GetString(descriptionOrdinal),
+                Category = reader.GetString(categoryOrdinal),
+                Area = reader.GetString(areaOrdinal)
             });
         }
         return Ok(animals);
