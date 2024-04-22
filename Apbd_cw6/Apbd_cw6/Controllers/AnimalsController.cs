@@ -68,6 +68,7 @@ public class AnimalsController : ControllerBase
         using SqlCommand command = new SqlCommand();
         command.Connection = connection;
         command.CommandText = "INSERT INTO Animals VALUES(@animalName, @animalDescription, @animalCategory, @animalArea)";
+        
         command.Parameters.AddWithValue("@animalName", animal.Name);
         command.Parameters.AddWithValue("@animalDescription", animal.Description);
         command.Parameters.AddWithValue("@animalCategory", animal.Category);

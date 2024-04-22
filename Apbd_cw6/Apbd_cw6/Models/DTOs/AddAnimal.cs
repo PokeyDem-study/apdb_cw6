@@ -4,7 +4,7 @@ namespace Apbd_cw6.Models.DTOs;
 
 public class AddAnimal
 {
-    [Required] //Validation
+    [Required]
     [MinLength(3)]
     [MaxLength(200)]
     public string Name { get; set; }
